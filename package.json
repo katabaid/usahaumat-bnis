@@ -24,12 +24,16 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "ramda": "^0.26.1",
     "winston": "^3.2.1"
   },
   "standard": {
-  "env": [ "jest" ]
-}
+    "env": [
+      "jest"
+    ]
+  }
 }
