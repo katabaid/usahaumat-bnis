@@ -16,7 +16,7 @@ const post = async req => {
   try {
     const res = await axios.post('/', prepareRequest(req))
     console.log(res)
-    if (res['status'] === '000') console.log(decrypt(res['message']))
+    if (res.data.status === '000') console.log(decrypt(res.data.data))
   } catch (e) {
     console.log(e)
   }
