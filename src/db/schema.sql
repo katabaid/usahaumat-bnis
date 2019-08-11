@@ -8,7 +8,9 @@ CREATE TABLE bnis_va_cust (
     user_email VARCHAR(255),
     user_birthdate DATE NOT NULL,
     virtual_account CHAR(16) UNIQUE,
-    create_date TIMESTAMP DEFAULT NOW()
+    created_date DATETIME NOT NULL DEFAULT NOW() ,
+    last_active_date DATETIME NOT NULL DEFAULT NOW(),
+    is_active BOOLEAN NOT NULL
 );
 
 CREATE TABLE bnis_trx (
@@ -22,14 +24,14 @@ CREATE TABLE bnis_trx (
     virtual_account CHAR(16),   -- I think that this should reference bnis_va_cust
     datetime_expired DATETIME,
     description VARCHAR(100),
-    created_date DATETIME DEFAULT NOW() NOT NULL,
-    last_active_date DATETIME NOT NULL,
+    created_date DATETIME NOT NULL DEFAULT NOW(),
+    last_active_date DATETIME NOT NULL DEFAULT NOW(),
     is_active BOOLEAN NOT NULL
 );
 
-CREATE bnis_log (
+CREATE TABLE bnis_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
-    log_date DATETIME NOT NULL, 
+    log_date DATETIME NOT NULL DEFAULT NOW(), 
     method_name VARCHAR(100) NOT NULL,
     message_type CHAR(1) NOT NULL,
     message TEXT
@@ -51,27 +53,3 @@ END
 $$
 
 DELIMITER ;
-
-
--- Move these tests to the application program
--- Test adding different dates
-INSERT INTO bnis_va_cust (user_birthdate) VALUES 
-('1996-06-15'), 
-('1987-03-1');
-
--- Test adding same date more than 10 times
-INSERT INTO bnis_va_cust (user_birthdate) VALUES 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15'), 
-('1993-06-15');
-
--- Adding one more should return an error
-INSERT INTO bnis_va_cust (user_birthdate) VALUES 
-('1993-06-15');
