@@ -41,10 +41,10 @@ CREATE TRIGGER generate_virtual_account
 BEFORE INSERT ON bnis_va_cust
 FOR EACH ROW BEGIN
     SET @auto_inc = (SELECT COUNT(*) FROM bnis_va_cust WHERE user_birthdate like NEW.user_birthdate);
-    -- Note that below we limit running number from 00 to 09
+    -- Note that below we limit running number from 00 to 99
     SET NEW.virtual_account = CONCAT('98800332',
                                      DATE_FORMAT(NEW.user_birthdate, '%y%m%d'),
-                                     LPAD(CAST(@auto_inc as decimal(1, 0)), 2, '0') 
+                                     LPAD(CAST(@auto_inc as decimal(2, 0)), 2, '0') 
                                     );
 END
 
