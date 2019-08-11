@@ -1,6 +1,5 @@
 const mariadb = require('mariadb')
 const moment = require('moment')
-const R = require('ramda')
 const config = require('../config.json')
 
 const billingType = 'c'
@@ -71,27 +70,32 @@ const buildInquiryBillingQuery = async params => {
 FROM bnis_trx`
 }
 
-const buildCreateVirtualAccountQuery = async params => {
-  const { user_id, user_name, user_birthdate } = params
+const buildCreateVirtualAccountQuery = (user_name, user_birthdate) => {
+  // Check if the timezone is correct
+  const nowRaw = moment()
+  const now = nowRaw.toDate()
 
-  const q =
-`INSERT INTO bnis_va_cust(
-  user_name,
-  virtual_account,
-  created_date,
-  last_active_date,
-  is_active
-) VALUES (${'?'}${' ?'.repeat(4)})`
+  const values = [
+    user_name,
+    moment(user_birthdate).format('Y-M-D'),
+    now,
+    1
+  ]
+
+  const query = `INSERT INTO bnis_va_cust(
+    user_name, user_birthdate, last_active_date, is_active
+    ) VALUES (${'?'}${', ?'.repeat(3)})` // 4 values
+
+  return ({ query, values })
 }
 
-const buildGetVirtualAccountQuery = async params => {
-  const { virtual_account } = params
-
+const buildGetVirtualAccountQuery = async virtual_account => {
   const q = `SELECT customer_name, customer_email FROM bnis_va_cust WHERE virtual_account=${virtual_account}`
+
+  return q
 }
 
-// createInvoiceRecord()
-
-// const createRecord = (params, type) => {
-//   if (type === 'createinvoice')
-// }
+module.exports = {
+  buildCreateVirtualAccountQuery,
+  buildGetVirtualAccountQuery
+}
