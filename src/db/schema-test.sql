@@ -1,6 +1,6 @@
--- DROP DATABASE IF EXISTS va;
-CREATE DATABASE va;
-use va;
+DROP DATABASE IF EXISTS test_va;
+CREATE DATABASE test_va;
+use test_va;
 
 CREATE TABLE bnis_va_cust (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
