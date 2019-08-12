@@ -27,12 +27,10 @@ const createDBInterface = () => ({
   // - Is there a difference between customer_name and user_name? Here I assume that it's the same
   async createBillingRecord (trxAmount, virtualAccount) {
     const { user_name, user_email } = await this.getVirtualAccount(virtualAccount)
-    console.log(user_name)
-    console.log(user_email)
-    // query(
-    //   request.buildCreateBillingQuery(trxAmount, virtualAccount, user_name, user_email),
-    //   handleCreateBilling
-    // )
+    return query(
+      request.buildCreateBillingQuery(trxAmount, virtualAccount, user_name, user_email),
+      handleCreateBilling
+    )
   }
 })
 
@@ -64,6 +62,14 @@ const handleGetVirtualAccount = async res => {
   return user
 }
 
+const handleCreateBilling = async res => {
+  const response = {
+    status: '000',
+    message: 'Operasi database berhasil'
+  }
+  return response
+}
+
 const query = async (q, responseHandler) => {
   try {
     const conn = await pool.getConnection()
@@ -71,7 +77,6 @@ const query = async (q, responseHandler) => {
       const response = await conn.query(q.query, q.values)
       const handled = await responseHandler(response)
       conn.release()
-      // console.log(handled)
       return handled
     } catch (err) {
       handleQueryError(err)
@@ -79,16 +84,6 @@ const query = async (q, responseHandler) => {
   } catch (err) {
     handleConnError(err)
   }
-  // pool.getConnection()
-  //   .then(conn => {
-  //     // Handle querying
-  //     conn.query(q.query, q.values)
-  //       .then(res => responseHandler(res))
-  //       .catch(err => handleQueryError(err))
-  //       // Make sure that we release db resource
-  //     conn.release()
-  //   })
-  //   .catch(err => handleConnError(err))
 }
 
 const displayResults = res => {
@@ -104,10 +99,11 @@ const handleDBSuccess = res => {
 }
 
 const handleQueryError = async err => {
-  console.log(err.fatal)
-  console.log(err.errno)
-  console.log(err.sqlState)
-  console.log(err.code)
+  // console.log(err.fatal)
+  // console.log(err.errno)
+  // console.log(err.sqlState)
+  // console.log(err.code)
+  console.log(err)
 }
 
 const handleConnError = async err => {
@@ -122,4 +118,5 @@ for (let i = 0; i < 1; i++) {
   // db.createVirtualAccount(fakeUserName, '1970-01-03')
   // db.getVirtualAccount('9880033270010312')
   db.createBillingRecord(1000, '9880033270010312')
+    .then(res => console.log(res))
 }

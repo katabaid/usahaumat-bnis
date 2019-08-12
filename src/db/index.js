@@ -8,14 +8,23 @@ const billingTypeDesc = config['billing-type']['c']
 const cid = config['credentials']['client-id']
 const sck = config['credentials']['secret-key']
 
-const buildCreateBillingQuery = async params => {
-  const { trx_id, trx_amount, virtual_account } = params
-  const { customer_name, customer_email } = getVirtualAccount(virtual_account)
-
+const buildCreateBillingQuery = (trx_amount, virtual_account, customer_name, customer_email) => {
   // Check if the timezone is correct
   const nowRaw = moment()
-  const now = nowRaw.toISOString()
-  const datetimeExpired = nowRaw.add(48, 'hours').toISOString()
+  const now = nowRaw.format('YYYY-MM-DD HH:mm:ss')
+  const datetimeExpired = nowRaw.add(48, 'hours').format('YYYY-MM-DD HH:mm:ss')
+
+  const query =
+`INSERT INTO bnis_trx(
+  trx_amount,
+  billing_type_db,
+  billing_type,
+  customer_name,
+  customer_email,
+  virtual_account,
+  datetime_expired,
+  is_active
+) VALUES (${'?'}${', ?'.repeat(7)})`
 
   const values = [
     trx_amount * 100,
@@ -25,26 +34,10 @@ const buildCreateBillingQuery = async params => {
     customer_email,
     virtual_account,
     datetimeExpired,
-    now,
-    now,
     1
   ]
 
-  const q =
-`INSERT INTO bnis_trx(
-  trx_amount,
-  billing_type_db,
-  billing_type,
-  customer_name,
-  customer_email,
-  virtual_account,
-  datetime_expired,
-  created_date,
-  last_active_date,
-  is_active
-) VALUES (${'?'}${' ?'.repeat(9)})`
-
-  console.log(q)
+  return ({ query, values })
 }
 
 const buildUpdateBillingQuery = async params => {
@@ -75,27 +68,29 @@ const buildCreateVirtualAccountQuery = (user_name, user_birthdate) => {
   const nowRaw = moment()
   const now = nowRaw.toDate()
 
-  const values = [
-    user_name,
-    moment(user_birthdate).format('Y-M-D'),
-    now,
-    1
-  ]
-
   const query = `INSERT INTO bnis_va_cust(
     user_name, user_birthdate, last_active_date, is_active
     ) VALUES (${'?'}${', ?'.repeat(3)})` // 4 values
 
+  const values = [
+    user_name,
+    moment(user_birthdate).format('YYYY-MM-DD'),
+    now,
+    1
+  ]
+
   return ({ query, values })
 }
 
-const buildGetVirtualAccountQuery = async virtual_account => {
-  const q = `SELECT customer_name, customer_email FROM bnis_va_cust WHERE virtual_account=${virtual_account}`
+const buildGetVirtualAccountQuery = virtual_account => {
+  const query = `SELECT user_name, user_email FROM bnis_va_cust 
+  WHERE virtual_account LIKE ${String(virtual_account)}`
 
-  return q
+  return ({ query })
 }
 
 module.exports = {
   buildCreateVirtualAccountQuery,
-  buildGetVirtualAccountQuery
+  buildGetVirtualAccountQuery,
+  buildCreateBillingQuery
 }
