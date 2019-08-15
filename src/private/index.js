@@ -90,8 +90,13 @@ const runner = async () => {
   const req = await buildJSONInquiryBilling('123')
   console.log(req)
 }
+const runner2 = async () => {
+  const req = await buildJSONUpdateBilling('123', '1000')
+  console.log(req)
+}
 
 runner()
+runner2()
 
 module.exports = {
   buildJSONCreateBilling,

@@ -1,0 +1,46 @@
+{
+  "connection": {
+    "url-ivc": "https://apibeta.bni-ecollection.com/",
+    "url-pay": "http://dev.bni-ecollection.com/",
+    "method": "POST",
+    "header-content": "application/json",
+    "callback-route": "npp"
+  },
+  "credentials": {
+    "bni-const": "988",
+    "client-id": "00332",
+    "secret-key": "e420dca835be24bf592a47ebbc064475"
+  },
+  "bnis-status-code": {
+    "000": "Success",
+    "001": "Incomplete/invalid Parameter(s)",
+    "002": "IP address not allowed or wrong Client ID",
+    "004": "Service not found",
+    "005": "Service not defined",
+    "006": "Invalid VA Number",
+    "008": "Technical Failure",
+    "009": "Unexpected Error",
+    "010": "Request Timeour",
+    "011": "Billing type does not match billing amount",
+    "012": "Invalid expiry date/time",
+    "013": "IDR currency cannot have billing amount with decimal fraction",
+    "101": "Billing not found",
+    "102": "VA Number is in use",
+    "103": "Billing has been expired",
+    "105": "Duplicate Billing ID",
+    "107": "Amount can not be changed",
+    "200": "Failed to send SMS Payment",
+    "201": "SMS Payment can only be used with Fixed Payment",
+    "997": "System is temporarily offline",
+    "998": "\"Content-Type\" header not defined as it should be",
+    "999": "Internal Error"
+  },
+  "billing-type": {
+    "o": "Open payment",
+    "c": "Fixed payment",
+    "i": "Partial payment",
+    "m": "Minimum payment",
+    "n": "Open minimum payment",
+    "x": "Open maximum payment"
+  }
+}

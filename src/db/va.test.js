@@ -8,6 +8,8 @@ const pool = mariadb.createPool({
   database: 'test_va'
 })
 
+// NOTE: This entire file should be moved into its own set of functions
+
 const createDBInterface = () => ({
   async createVirtualAccount (userName, userBirthdate) {
     return query(
@@ -110,6 +112,7 @@ const handleConnError = async err => {
   console.log(err)
 }
 
+// This is a runner to test database connection
 const db = createDBInterface()
 for (let i = 0; i < 1; i++) {
   const fakeUserName = faker.internet.userName()

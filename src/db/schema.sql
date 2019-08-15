@@ -14,7 +14,7 @@ CREATE TABLE bnis_va_cust (
 );
 
 CREATE TABLE bnis_trx (
-    trx_id INT AUTO_INCREMENT PRIMARY KEY,
+    trx_id INT AUTO_INCREMENT PRIMARY KEY, -- Remove AUTO_INCREMENT?
     trx_amount BIGINT NOT NULL,
     billing_type_db CHAR(1) NOT NULL,
     billing_type VARCHAR(25) NOT NULL,
